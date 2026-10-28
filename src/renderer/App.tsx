@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   BookOpen,
+  PanelLeft,
   Plus,
   Settings as SettingsIcon,
   ShieldAlert,
   ShieldCheck,
-  Sparkles,
   Terminal,
 } from "lucide-react";
 import type {
@@ -21,6 +21,8 @@ import type {
 } from "../core/types";
 import { ChatHeader, ChatView } from "./components/Chat";
 import { Composer } from "./components/Composer";
+import { Mark } from "./components/Brand";
+import { LatticeLoader } from "./components/Motion";
 import {
   ApprovalModal,
   CommandPalette,
@@ -480,7 +482,7 @@ export default function App() {
       {
         id: "sidebar",
         label: sidebarOpen ? "Hide sidebar" : "Show sidebar",
-        icon: <Sparkles size={14} />,
+        icon: <PanelLeft size={14} />,
         run: () => setSidebarOpen((v) => !v),
       },
     ],
@@ -495,10 +497,16 @@ export default function App() {
 
   if (fatal) {
     return (
-      <div className="splash">
-        <div className="splash-card">
-          <h1>Orinos could not start</h1>
-          <p>{fatal}</p>
+      <div className="splash fatal-splash">
+        <div className="fatal-card">
+          <span className="fatal-mark">
+            <Mark size={30} />
+          </span>
+          <div className="fatal-copy">
+            <span className="splash-wordmark">ORINOS</span>
+            <h1>Startup failed</h1>
+            <p>{fatal}</p>
+          </div>
         </div>
       </div>
     );
@@ -507,14 +515,26 @@ export default function App() {
   if (!boot || !config || !session) {
     return (
       <div className="splash">
-        <div className="splash-orb" />
-        <div className="splash-text">Starting Orinos…</div>
+        <div className="splash-brand">
+          <Mark size={42} />
+          <div className="splash-brand-copy">
+            <span className="splash-wordmark">ORINOS</span>
+            <span className="splash-tag">AGENT HARNESS</span>
+          </div>
+        </div>
+        <div className="splash-load">
+          <LatticeLoader />
+          <span>STARTING HARNESS</span>
+        </div>
       </div>
     );
   }
 
   return (
     <div className={`app ${sidebarOpen ? "" : "sidebar-hidden"}`}>
+      <a className="skip-link" href="#composer-input">
+        Skip to composer
+      </a>
       {sidebarOpen && (
         <Sidebar
           sessions={sessions}
@@ -532,7 +552,7 @@ export default function App() {
         />
       )}
 
-      <main className="main">
+      <main className="main" id="main">
         <ChatHeader
           title={session.title}
           providerName={currentProvider?.name || selection.provider}

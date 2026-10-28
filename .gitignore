@@ -4,3 +4,5 @@ release/
 .DS_Store
 *.log
 src/core/catalog.json.tmp
+.impeccable/review/
+.impeccable/build/

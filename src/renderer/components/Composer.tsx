@@ -18,6 +18,7 @@ import {
 import type { ProviderInfo } from "../../core/types";
 import { formatTokens, shortPath } from "../lib";
 import type { Selection } from "../ui-types";
+import { ClickSpark } from "./Motion";
 
 interface ComposerProps {
   value: string;
@@ -48,8 +49,6 @@ export function Composer(props: ComposerProps) {
   const searchRef = useRef<HTMLInputElement>(null);
 
   const provider = props.providers.find((p) => p.id === props.selection.provider);
-  const model = provider?.models.find((m) => m.id === props.selection.model);
-  const context = model?.context;
   const local = /localhost|127\.0\.0\.1/.test(provider?.api || "");
 
   useEffect(() => {
@@ -128,36 +127,49 @@ export function Composer(props: ComposerProps) {
         </button>
       )}
 
-      <div className={`composer ${props.running ? "busy" : ""}`}>
+      <div className={`composer ${props.running ? "busy" : ""}`} aria-busy={props.running}>
+        <div className="composer-reg">
+          <span>Input</span>
+          <span className="composer-reg-meta">
+            {props.running ? "Agent running" : "Ready"}{" "}
+            <span className="composer-reg-square" aria-hidden="true" />
+          </span>
+        </div>
+
         {props.attachments.length > 0 && (
           <div className="attachments">
             {props.attachments.map((path) => (
               <span key={path} className="attachment-chip">
                 <FileText size={12} />
                 <span>{path.split("/").pop()}</span>
-                <button onClick={() => props.onRemoveAttachment(path)} title="Remove">
+                <button onClick={() => props.onRemoveAttachment(path)} title="Remove" aria-label={`Remove ${path}`}>
                   <X size={12} />
                 </button>
               </span>
             ))}
           </div>
         )}
+
         <textarea
+          id="composer-input"
           ref={textarea}
           value={props.value}
           onChange={(e) => props.setValue(e.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder={props.running ? "Orinos is working…" : "Ask Orinos to build, debug, or research anything…"}
+          placeholder={props.running ? "Orinos is working…" : "State the job. Orinos will run it."}
           rows={1}
           spellCheck={false}
           disabled={props.running}
+          aria-label="Message Orinos"
         />
+
         <div className="composer-bar">
           <div className="composer-left">
             <button
               className="model-chip"
               onClick={() => setPickerOpen((v) => !v)}
               title="Change model"
+              aria-expanded={pickerOpen}
             >
               <span className={`status-dot ${props.keyed.has(props.selection.provider) || local ? "ok" : "warn"}`} />
               <span className="model-chip-name">{props.selection.model.split("/").pop()}</span>
@@ -168,7 +180,7 @@ export function Composer(props: ComposerProps) {
             {pickerOpen && (
               <>
                 <div className="popover-shade" onClick={() => setPickerOpen(false)} />
-                <div className="model-popover">
+                <div className="model-popover" role="dialog" aria-label="Choose a model">
                   <div className="model-search">
                     <Search size={14} />
                     <input
@@ -177,6 +189,7 @@ export function Composer(props: ComposerProps) {
                       onChange={(e) => setQuery(e.target.value)}
                       placeholder="Search 200+ providers and 8,900+ models…"
                       onKeyDown={(e) => e.key === "Escape" && setPickerOpen(false)}
+                      aria-label="Search models"
                     />
                     <kbd>esc</kbd>
                   </div>
@@ -206,9 +219,7 @@ export function Composer(props: ComposerProps) {
                               }}
                             >
                               <span className="model-row-name">{row.modelName}</span>
-                              {row.context ? (
-                                <span className="model-row-ctx">{formatTokens(row.context)}</span>
-                              ) : null}
+                              {row.context ? <span className="model-row-ctx">{formatTokens(row.context)}</span> : null}
                               {active && <Check size={13} />}
                             </button>
                           );
@@ -217,21 +228,24 @@ export function Composer(props: ComposerProps) {
                     ))}
                   </div>
                   <div className="model-footer">
-                    <span>{props.providers.length} providers · {props.providers.reduce((n, p) => n + p.models.length, 0).toLocaleString()} models</span>
+                    <span>
+                      {props.providers.length} providers /{" "}
+                      {props.providers.reduce((n, p) => n + p.models.length, 0).toLocaleString()} models
+                    </span>
                     <span>via models.dev</span>
                   </div>
                 </div>
               </>
             )}
 
-            <button className="composer-icon" onClick={props.onAttach} title="Attach files">
+            <button className="composer-icon" onClick={props.onAttach} title="Attach files" aria-label="Attach files">
               <Paperclip size={15} />
             </button>
             <span className="composer-workspace" title={props.workspace}>
               <Folder size={12} />
               {shortPath(props.workspace, 26)}
             </span>
-            <button className="composer-icon" onClick={props.onOpenTerminal} title="Terminal">
+            <button className="composer-icon" onClick={props.onOpenTerminal} title="Terminal" aria-label="Terminal">
               <Terminal size={15} />
             </button>
             <button
@@ -244,25 +258,44 @@ export function Composer(props: ComposerProps) {
             </button>
           </div>
           <div className="composer-right">
-            {context ? <span className="composer-context">{formatTokens(context)} ctx</span> : null}
+            {props.contextMax ? <span className="composer-context">{formatTokens(props.contextMax)} ctx</span> : null}
             {props.running ? (
-              <button className="send-btn stop" onClick={props.onStop} title="Stop">
-                <Square size={14} fill="currentColor" />
+              <button className="send-btn stop" onClick={props.onStop} title="Stop" aria-label="Stop">
+                <Square size={13} fill="currentColor" />
               </button>
             ) : (
-              <button className={`send-btn ${canSend ? "ready" : ""}`} onClick={props.onSend} disabled={!canSend} title="Send">
-                <ArrowUp size={16} />
-              </button>
+              <ClickSpark>
+                <button
+                  className={`send-btn ${canSend ? "ready" : ""}`}
+                  onClick={props.onSend}
+                  disabled={!canSend}
+                  title="Send"
+                  aria-label="Send message"
+                >
+                  <ArrowUp size={17} strokeWidth={2.2} />
+                </button>
+              </ClickSpark>
             )}
           </div>
         </div>
       </div>
       <div className="composer-hint">
-        <span><kbd>↵</kbd> send</span>
-        <span><kbd>⇧↵</kbd> newline</span>
-        <span><kbd>⌘K</kbd> commands</span>
+        <span>
+          <kbd>↵</kbd> send
+        </span>
+        <span>
+          <kbd>⇧↵</kbd> newline
+        </span>
+        <span>
+          <kbd>⌘K</kbd> commands
+        </span>
         <span className="composer-hint-right">
-          <Cpu size={12} /> {provider?.kind === "anthropic" ? "Anthropic API" : provider?.kind === "google" ? "Google API" : "OpenAI-compatible"}
+          <Cpu size={12} />{" "}
+          {provider?.kind === "anthropic"
+            ? "Anthropic API"
+            : provider?.kind === "google"
+              ? "Google API"
+              : "OpenAI-compatible"}
         </span>
       </div>
     </div>

@@ -21,7 +21,7 @@ function createWindow(): void {
     minHeight: 640,
     show: false,
     title: "Orinos",
-    backgroundColor: "#07080c",
+    backgroundColor: "#e7ebe4",
     titleBarStyle: process.platform === "darwin" ? "hiddenInset" : "default",
     trafficLightPosition: { x: 18, y: 20 },
     webPreferences: {
@@ -60,9 +60,38 @@ function createWindow(): void {
     win.webContents.once("did-finish-load", () => {
       setTimeout(async () => {
         try {
+          if (process.env.ORINOS_SMOKE_REDUCED) {
+            win!.webContents.debugger.attach("1.3");
+            await win!.webContents.debugger.sendCommand("Emulation.setEmulatedMedia", {
+              features: [{ name: "prefers-reduced-motion", value: "reduce" }],
+            });
+          }
           const script = process.env.ORINOS_SMOKE_JS;
           if (script) {
-            await win!.webContents.executeJavaScript(script, true);
+            const result = await win!.webContents.executeJavaScript(script, true);
+            if (process.env.ORINOS_SMOKE_DEBUG) {
+              console.log(`SMOKE_JS ${JSON.stringify(result)}`);
+            }
+            await new Promise((resolve) => setTimeout(resolve, 650));
+          }
+          if (process.env.ORINOS_SMOKE_APPROVAL) {
+            win!.webContents.send("orinos:approval", {
+              request: {
+                id: "smoke-approval",
+                sessionId: "smoke",
+                tool: "terminal",
+                args: { command: "npm run build", cwd: "/tmp/orinos-play" },
+                summary: "npm run build",
+              },
+            });
+            await new Promise((resolve) => setTimeout(resolve, 450));
+          }
+          const afterScript = process.env.ORINOS_SMOKE_JS_AFTER;
+          if (afterScript) {
+            const result = await win!.webContents.executeJavaScript(afterScript, true);
+            if (process.env.ORINOS_SMOKE_DEBUG) {
+              console.log(`SMOKE_AFTER ${JSON.stringify(result)}`);
+            }
             await new Promise((resolve) => setTimeout(resolve, 650));
           }
           const image = await win!.webContents.capturePage();

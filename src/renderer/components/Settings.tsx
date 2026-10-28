@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   Check,
   ChevronDown,
@@ -13,7 +13,9 @@ import {
   X,
 } from "lucide-react";
 import type { AppConfig, ProviderInfo } from "../../core/types";
-import { formatTokens } from "../lib";
+import { useFocusTrap } from "../useFocusTrap";
+import { Mark } from "./Brand";
+import { CountUp } from "./Motion";
 
 interface SettingsProps {
   open: boolean;
@@ -40,10 +42,8 @@ interface SettingsProps {
 type Tab = "general" | "providers" | "about";
 
 const THEMES = [
-  { id: "midnight", label: "Midnight", colors: ["#8b5cf6", "#22d3ee"] },
-  { id: "ocean", label: "Ocean", colors: ["#0ea5e9", "#2dd4bf"] },
-  { id: "ember", label: "Ember", colors: ["#f97316", "#f43f5e"] },
-  { id: "forest", label: "Forest", colors: ["#22c55e", "#a3e635"] },
+  { id: "paper", label: "Enamel", note: "Orange on pale stock" },
+  { id: "carbon", label: "Carbon", note: "Orange on graphite" },
 ];
 
 export function Settings(props: SettingsProps) {
@@ -59,6 +59,9 @@ export function Settings(props: SettingsProps) {
   const [customKind, setCustomKind] = useState("openai");
   const [customKeyEnv, setCustomKeyEnv] = useState("");
   const [customModels, setCustomModels] = useState("");
+  const modalRef = useRef<HTMLDivElement>(null);
+
+  useFocusTrap(props.open, modalRef, ".settings-tabs button.active");
 
   useEffect(() => {
     if (props.open) setWorkspaceDraft(props.config.workspace);
@@ -116,40 +119,77 @@ export function Settings(props: SettingsProps) {
     flash("Provider added");
   };
 
+  const switchTab = (next: Tab) => {
+    setTab(next);
+    if (next !== "providers") setQuery("");
+  };
+
   if (!props.open) return null;
 
   return (
     <div className="modal-shade" onMouseDown={props.onClose}>
-      <div className="modal settings-modal" onMouseDown={(e) => e.stopPropagation()}>
+      <div
+        ref={modalRef}
+        className="modal settings-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Settings"
+        onMouseDown={(e) => e.stopPropagation()}
+      >
         <header className="modal-head">
           <div>
             <h2>Settings</h2>
             <p>Configuration lives in <span className="mono">{props.home}</span></p>
           </div>
-          <button className="icon-btn" onClick={props.onClose} title="Close">
-            <X size={16} />
-          </button>
+          <div className="modal-head-side">
+            <span className="modal-count mono">v{props.version}</span>
+            <button className="icon-btn" onClick={props.onClose} title="Close settings" aria-label="Close settings">
+              <X size={16} />
+            </button>
+          </div>
         </header>
 
         <div className="settings-layout">
-          <nav className="settings-tabs">
-            <button className={tab === "general" ? "active" : ""} onClick={() => setTab("general")}>
+          <nav className="settings-tabs" role="tablist" aria-label="Settings sections">
+            <button
+              role="tab"
+              aria-selected={tab === "general"}
+              className={tab === "general" ? "active" : ""}
+              onClick={() => switchTab("general")}
+            >
               General
             </button>
-            <button className={tab === "providers" ? "active" : ""} onClick={() => setTab("providers")}>
+            <button
+              role="tab"
+              aria-selected={tab === "providers"}
+              className={tab === "providers" ? "active" : ""}
+              onClick={() => switchTab("providers")}
+            >
               Providers
               <span className="tab-count">{props.providers.length}</span>
             </button>
-            <button className={tab === "about" ? "active" : ""} onClick={() => setTab("about")}>
+            <button
+              role="tab"
+              aria-selected={tab === "about"}
+              className={tab === "about" ? "active" : ""}
+              onClick={() => switchTab("about")}
+            >
               About
             </button>
-            {saved && <span className="settings-saved"><Check size={12} /> {saved}</span>}
+            {saved && (
+              <span className="settings-saved" role="status" aria-live="polite">
+                <Check size={12} /> {saved}
+              </span>
+            )}
           </nav>
 
-          <div className="settings-body">
+          <div className="settings-body" role="tabpanel">
             {tab === "general" && (
               <div className="settings-section">
-                <div className="section-title">Model</div>
+                <div className="section-title">
+                  Model
+                  <span className="section-rule" aria-hidden="true" />
+                </div>
                 <div className="field-row">
                   <label>Default provider</label>
                   <select
@@ -191,7 +231,10 @@ export function Settings(props: SettingsProps) {
                   </div>
                 )}
 
-                <div className="section-title">Workspace</div>
+                <div className="section-title">
+                  Workspace
+                  <span className="section-rule" aria-hidden="true" />
+                </div>
                 <div className="field-row">
                   <label>Working directory</label>
                   <div className="input-group">
@@ -199,6 +242,7 @@ export function Settings(props: SettingsProps) {
                       value={workspaceDraft}
                       onChange={(e) => setWorkspaceDraft(e.target.value)}
                       spellCheck={false}
+                      aria-label="Working directory"
                     />
                     <button
                       className="btn small"
@@ -229,7 +273,10 @@ export function Settings(props: SettingsProps) {
                   <span className="field-note">New chats use this directory. Existing chats keep theirs.</span>
                 </div>
 
-                <div className="section-title">Agent</div>
+                <div className="section-title">
+                  Agent
+                  <span className="section-rule" aria-hidden="true" />
+                </div>
                 <div className="toggle-row">
                   <div>
                     <div className="toggle-label">Auto-approve tools</div>
@@ -239,6 +286,9 @@ export function Settings(props: SettingsProps) {
                   </div>
                   <button
                     className={`switch ${props.config.autoApprove ? "on" : ""}`}
+                    role="switch"
+                    aria-checked={props.config.autoApprove}
+                    aria-label="Auto-approve tools"
                     onClick={async () => {
                       await props.onUpdateConfig({ autoApprove: !props.config.autoApprove });
                       flash("Saved");
@@ -258,8 +308,9 @@ export function Settings(props: SettingsProps) {
                       value={props.config.temperature}
                       style={{ "--range-progress": `${(props.config.temperature / 2) * 100}%` } as React.CSSProperties}
                       onChange={(e) => props.onUpdateConfig({ temperature: Number(e.target.value) })}
+                      aria-label="Temperature"
                     />
-                    <span className="range-value">{props.config.temperature.toFixed(1)}</span>
+                    <span className="range-value mono">{props.config.temperature.toFixed(1)}</span>
                   </div>
                 </div>
                 <div className="field-row">
@@ -270,10 +321,14 @@ export function Settings(props: SettingsProps) {
                     max="200"
                     value={props.config.maxSteps}
                     onChange={(e) => props.onUpdateConfig({ maxSteps: Number(e.target.value) })}
+                    aria-label="Maximum steps per turn"
                   />
                 </div>
 
-                <div className="section-title">Web search</div>
+                <div className="section-title">
+                  Web search
+                  <span className="section-rule" aria-hidden="true" />
+                </div>
                 <div className="field-row">
                   <label>Provider</label>
                   <select
@@ -297,7 +352,11 @@ export function Settings(props: SettingsProps) {
                       value={props.config.webSearch?.apiKey || ""}
                       onChange={(e) =>
                         props.onUpdateConfig({
-                          webSearch: { ...(props.config.webSearch || { provider: "brave" }), provider: "brave", apiKey: e.target.value },
+                          webSearch: {
+                            ...(props.config.webSearch || { provider: "brave" }),
+                            provider: "brave",
+                            apiKey: e.target.value,
+                          },
                         })
                       }
                       placeholder="BSA…"
@@ -311,7 +370,11 @@ export function Settings(props: SettingsProps) {
                       value={props.config.webSearch?.url || ""}
                       onChange={(e) =>
                         props.onUpdateConfig({
-                          webSearch: { ...(props.config.webSearch || { provider: "searxng" }), provider: "searxng", url: e.target.value },
+                          webSearch: {
+                            ...(props.config.webSearch || { provider: "searxng" }),
+                            provider: "searxng",
+                            url: e.target.value,
+                          },
                         })
                       }
                       placeholder="https://searx.example.com"
@@ -319,7 +382,10 @@ export function Settings(props: SettingsProps) {
                   </div>
                 )}
 
-                <div className="section-title">Theme</div>
+                <div className="section-title">
+                  Surface
+                  <span className="section-rule" aria-hidden="true" />
+                </div>
                 <div className="theme-grid">
                   {THEMES.map((theme) => (
                     <button
@@ -329,13 +395,17 @@ export function Settings(props: SettingsProps) {
                         await props.onUpdateConfig({ theme: theme.id });
                         flash("Theme updated");
                       }}
+                      aria-pressed={props.config.theme === theme.id}
                     >
-                      <span
-                        className="theme-dot"
-                        style={{ background: `linear-gradient(135deg, ${theme.colors[0]}, ${theme.colors[1]})` }}
-                      />
-                      {theme.label}
-                      {props.config.theme === theme.id && <Check size={12} />}
+                      <span className="theme-plate" data-theme={theme.id} aria-hidden="true">
+                        <span className="theme-plate-rail" />
+                        <span className="theme-plate-field" />
+                      </span>
+                      <span className="theme-copy">
+                        <span className="theme-label">{theme.label}</span>
+                        <span className="theme-note">{theme.note}</span>
+                      </span>
+                      {props.config.theme === theme.id && <Check size={13} />}
                     </button>
                   ))}
                 </div>
@@ -352,6 +422,7 @@ export function Settings(props: SettingsProps) {
                       onChange={(e) => setQuery(e.target.value)}
                       placeholder={`Search ${props.providers.length} providers…`}
                       spellCheck={false}
+                      aria-label="Search providers"
                     />
                   </div>
                   <button className="btn small" onClick={() => setCustomOpen((v) => !v)}>
@@ -404,7 +475,11 @@ export function Settings(props: SettingsProps) {
                       />
                     </label>
                     <div className="field-actions">
-                      <button className="btn primary small" onClick={addCustom} disabled={!customName.trim() || !customApi.trim()}>
+                      <button
+                        className="btn primary small"
+                        onClick={addCustom}
+                        disabled={!customName.trim() || !customApi.trim()}
+                      >
                         Add provider
                       </button>
                       <button className="btn small" onClick={() => setCustomOpen(false)}>
@@ -420,7 +495,11 @@ export function Settings(props: SettingsProps) {
                     const keyed = props.keyed.has(provider.id);
                     return (
                       <div key={provider.id} className={`provider-row ${isOpen ? "open" : ""}`}>
-                        <button className="provider-head" onClick={() => setExpanded(isOpen ? null : provider.id)}>
+                        <button
+                          className="provider-head"
+                          onClick={() => setExpanded(isOpen ? null : provider.id)}
+                          aria-expanded={isOpen}
+                        >
                           <span className={`status-dot ${keyed ? "ok" : "warn"}`} />
                           <span className="provider-name">{provider.name}</span>
                           <span className="provider-id">{provider.id}</span>
@@ -439,10 +518,7 @@ export function Settings(props: SettingsProps) {
                               <code>{provider.keyEnv || provider.env.join(", ") || "—"}</code>
                             </div>
                             {provider.doc && (
-                              <button
-                                className="link-btn"
-                                onClick={() => window.orinos.openExternal(provider.doc!)}
-                              >
+                              <button className="link-btn" onClick={() => window.orinos.openExternal(provider.doc!)}>
                                 Provider docs <ExternalLink size={11} />
                               </button>
                             )}
@@ -450,11 +526,10 @@ export function Settings(props: SettingsProps) {
                               <input
                                 type="password"
                                 value={keyInputs[provider.id] || ""}
-                                onChange={(e) =>
-                                  setKeyInputs((prev) => ({ ...prev, [provider.id]: e.target.value }))
-                                }
+                                onChange={(e) => setKeyInputs((prev) => ({ ...prev, [provider.id]: e.target.value }))}
                                 placeholder={keyed ? "Key configured — enter a new one to replace" : "Paste API key"}
                                 spellCheck={false}
+                                aria-label={`API key for ${provider.name}`}
                                 onKeyDown={(e) => {
                                   if (e.key === "Enter") void saveKey(provider.id);
                                 }}
@@ -498,9 +573,7 @@ export function Settings(props: SettingsProps) {
                       </div>
                     );
                   })}
-                  {filteredProviders.length === 0 && (
-                    <div className="model-empty">No providers match “{query}”.</div>
-                  )}
+                  {filteredProviders.length === 0 && <div className="model-empty">No providers match “{query}”.</div>}
                 </div>
               </div>
             )}
@@ -508,33 +581,41 @@ export function Settings(props: SettingsProps) {
             {tab === "about" && (
               <div className="settings-section about">
                 <div className="about-head">
-                  <div className="about-orb">
-                    <span />
-                  </div>
+                  <span className="about-mark">
+                    <Mark size={40} />
+                  </span>
                   <div>
                     <h3>Orinos</h3>
                     <p>v{props.version} · AI agent harness</p>
                   </div>
+                  <span className="about-stamp mono">LOCAL / 01</span>
                 </div>
                 <div className="about-grid">
                   <div>
                     <span>Providers</span>
-                    <strong>{statsText(props.stats.providers)}</strong>
+                    <strong>
+                      <CountUp value={props.stats.providers} />
+                    </strong>
                   </div>
                   <div>
                     <span>Models</span>
-                    <strong>{statsText(props.stats.models)}</strong>
+                    <strong>
+                      <CountUp value={props.stats.models} />
+                    </strong>
                   </div>
                   <div>
                     <span>Catalog</span>
-                    <strong>{props.stats.generatedAt.slice(0, 10)}</strong>
+                    <strong className="mono">{props.stats.generatedAt.slice(0, 10)}</strong>
                   </div>
                   <div>
                     <span>Config</span>
                     <strong className="mono">{props.home}</strong>
                   </div>
                 </div>
-                <div className="section-title">Shortcuts</div>
+                <div className="section-title">
+                  Shortcuts
+                  <span className="section-rule" aria-hidden="true" />
+                </div>
                 <div className="shortcut-list">
                   <div><kbd>⌘N</kbd> New chat</div>
                   <div><kbd>⌘K</kbd> Command palette</div>
@@ -543,7 +624,10 @@ export function Settings(props: SettingsProps) {
                   <div><kbd>⇧↵</kbd> New line</div>
                   <div><kbd>Esc</kbd> Close overlay</div>
                 </div>
-                <div className="section-title">Under the hood</div>
+                <div className="section-title">
+                  Under the hood
+                  <span className="section-rule" aria-hidden="true" />
+                </div>
                 <p className="about-text">
                   TypeScript core shared by the terminal CLI and the Electron app. Streaming adapters for
                   OpenAI-compatible, Anthropic and Google APIs. Native tool calling, a markdown skill system, and
@@ -552,6 +636,10 @@ export function Settings(props: SettingsProps) {
                     models.dev <ExternalLink size={11} />
                   </button>
                   .
+                </p>
+                <p className="about-text fine">
+                  Interface motion adapted from React Bits by David Haz (MIT + Commons Clause), re-implemented for
+                  this surface. Type: Barlow, Barlow Condensed, Spline Sans Mono.
                 </p>
                 <div className="about-footer">
                   <ShieldCheck size={13} /> Everything runs locally. Keys never leave your machine except to the
@@ -564,8 +652,4 @@ export function Settings(props: SettingsProps) {
       </div>
     </div>
   );
-}
-
-function statsText(n: number): string {
-  return n ? formatTokens(n) : "0";
 }

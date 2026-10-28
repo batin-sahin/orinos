@@ -2,25 +2,20 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import {
   ArrowRight,
   BookOpen,
-  Check,
   Command,
   Cpu,
-  FileText,
-  Loader2,
   MessageSquare,
-  Search,
-  Settings,
   ShieldAlert,
-  Sparkles,
   Square,
   Terminal,
   Trash2,
+  Wrench,
   X,
 } from "lucide-react";
 import type { ApprovalRequest, ProviderInfo, SessionSummary, SkillSummary } from "../../core/types";
-import type { AppConfig } from "../../core/types";
 import { formatRelative, parseArgs, renderMarkdown, shortPath } from "../lib";
-import { Orb } from "./Sidebar";
+import { useFocusTrap } from "../useFocusTrap";
+import { LatticeLoader, StatusMark } from "./Motion";
 
 export function SkillsPanel({
   open,
@@ -34,6 +29,9 @@ export function SkillsPanel({
   const [selected, setSelected] = useState<SkillSummary | null>(null);
   const [content, setContent] = useState("");
   const [loading, setLoading] = useState(false);
+  const modalRef = useRef<HTMLDivElement>(null);
+
+  useFocusTrap(open, modalRef, ".skill-item");
 
   useEffect(() => {
     if (!open) return;
@@ -56,23 +54,34 @@ export function SkillsPanel({
   if (!open) return null;
   return (
     <div className="modal-shade" onMouseDown={onClose}>
-      <div className="modal skills-modal" onMouseDown={(e) => e.stopPropagation()}>
+      <div
+        ref={modalRef}
+        className="modal skills-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Skills"
+        onMouseDown={(e) => e.stopPropagation()}
+      >
         <header className="modal-head">
           <div>
             <h2>Skills</h2>
             <p>Instruction packs Orinos loads when a task matches. Drop your own into ~/.orinos/skills.</p>
           </div>
-          <button className="icon-btn" onClick={onClose}>
-            <X size={16} />
-          </button>
+          <div className="modal-head-side">
+            <span className="modal-count mono">{String(skills.length).padStart(2, "0")} PACKS</span>
+            <button className="icon-btn" onClick={onClose} title="Close skills" aria-label="Close skills">
+              <X size={16} />
+            </button>
+          </div>
         </header>
         <div className="skills-layout">
-          <div className="skills-list">
+          <div className="skills-list" role="list">
             {skills.map((skill) => (
               <button
                 key={skill.name}
                 className={`skill-item ${selected?.name === skill.name ? "active" : ""}`}
                 onClick={() => load(skill)}
+                aria-current={selected?.name === skill.name ? "true" : undefined}
               >
                 <BookOpen size={14} />
                 <span className="skill-item-main">
@@ -99,9 +108,15 @@ export function SkillsPanel({
                   </div>
                 </div>
                 {loading ? (
-                  <div className="model-empty"><Loader2 size={14} className="spin" /> Loading…</div>
+                  <div className="model-empty loading-row">
+                    <LatticeLoader />
+                    <span>Loading pack</span>
+                  </div>
                 ) : (
-                  <div className="skill-content markdown" dangerouslySetInnerHTML={{ __html: renderMarkdown(content) }} />
+                  <div
+                    className="skill-content markdown"
+                    dangerouslySetInnerHTML={{ __html: renderMarkdown(content) }}
+                  />
                 )}
               </>
             ) : (
@@ -142,12 +157,14 @@ export function CommandPalette(props: PaletteProps) {
   const [query, setQuery] = useState("");
   const [active, setActive] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
+  const modalRef = useRef<HTMLDivElement>(null);
+
+  useFocusTrap(props.open, modalRef, "input");
 
   useEffect(() => {
     if (props.open) {
       setQuery("");
       setActive(0);
-      setTimeout(() => inputRef.current?.focus(), 40);
     }
   }, [props.open]);
 
@@ -217,7 +234,14 @@ export function CommandPalette(props: PaletteProps) {
 
   return (
     <div className="modal-shade palette-shade" onMouseDown={props.onClose}>
-      <div className="palette" onMouseDown={(e) => e.stopPropagation()}>
+      <div
+        ref={modalRef}
+        className="palette"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Command palette"
+        onMouseDown={(e) => e.stopPropagation()}
+      >
         <div className="palette-search">
           <Command size={16} />
           <input
@@ -228,6 +252,7 @@ export function CommandPalette(props: PaletteProps) {
               setActive(0);
             }}
             placeholder="Jump to a chat, model, or command…"
+            aria-label="Search commands, chats, and models"
             onKeyDown={(e) => {
               if (e.key === "Escape") props.onClose();
               if (e.key === "ArrowDown") {
@@ -264,7 +289,7 @@ export function CommandPalette(props: PaletteProps) {
                 >
                   <span className="palette-icon">
                     {item.type === "action" ? (
-                      item.icon || <Sparkles size={14} />
+                      item.icon || <Wrench size={14} />
                     ) : item.type === "model" ? (
                       <Cpu size={14} />
                     ) : (
@@ -284,6 +309,7 @@ export function CommandPalette(props: PaletteProps) {
           <span><kbd>↑</kbd><kbd>↓</kbd> navigate</span>
           <span><kbd>↵</kbd> open</span>
           <span><kbd>esc</kbd> close</span>
+          <span className="palette-footer-mark">ORINOS / INDEX</span>
         </div>
       </div>
     </div>
@@ -297,8 +323,14 @@ export function ApprovalModal({
   request: ApprovalRequest | null;
   onRespond: (approved: boolean) => void;
 }) {
+  const denyRef = useRef<HTMLButtonElement>(null);
+  const modalRef = useRef<HTMLDivElement>(null);
+
+  useFocusTrap(!!request, modalRef, ".approval-actions .btn");
+
   useEffect(() => {
     if (!request) return;
+    denyRef.current?.focus();
     const handler = (event: KeyboardEvent) => {
       if (event.key === "Escape") onRespond(false);
       if (event.key === "Enter" && (event.metaKey || event.ctrlKey)) onRespond(true);
@@ -311,25 +343,37 @@ export function ApprovalModal({
   const args = parseArgs(JSON.stringify(request.args));
   return (
     <div className="modal-shade approval-shade">
-      <div className="modal approval-modal">
-        <div className="approval-icon">
-          <ShieldAlert size={20} />
+      <div
+        ref={modalRef}
+        className="modal approval-modal"
+        role="alertdialog"
+        aria-modal="true"
+        aria-label="Approve tool call"
+      >
+        <div className="approval-flag">
+          <ShieldAlert size={15} />
+          <span>Approval required</span>
+          <span className="approval-flag-rule" aria-hidden="true" />
+          <span className="mono">HOLD</span>
         </div>
         <h2>Approve tool call?</h2>
         <p className="approval-sub">
           Orinos wants to run <strong>{request.tool}</strong> in this session.
         </p>
-        <div className="approval-summary mono">{request.summary}</div>
+        <div className="approval-summary">
+          <span className="field-label">Command</span>
+          <code>{request.summary}</code>
+        </div>
         <details className="approval-details">
           <summary>Arguments</summary>
           <pre>{JSON.stringify(args, null, 2).slice(0, 4000)}</pre>
         </details>
         <div className="approval-actions">
-          <button className="btn" onClick={() => onRespond(false)}>
+          <button ref={denyRef} className="btn" onClick={() => onRespond(false)}>
             Deny <kbd>esc</kbd>
           </button>
           <button className="btn primary" onClick={() => onRespond(true)}>
-            Allow <kbd>⌘↵</kbd>
+            Allow once <kbd>⌘↵</kbd>
           </button>
         </div>
         <div className="field-note">
@@ -399,27 +443,29 @@ export function TerminalDrawer({
   };
 
   return (
-    <div className="terminal-drawer">
+    <div className="terminal-drawer" role="region" aria-label="Terminal">
       <div className="terminal-head">
         <div className="terminal-title">
           <Terminal size={14} />
           <span>Terminal</span>
+          <span className="terminal-rule" aria-hidden="true" />
           <span className="mono">{shortPath(workspace, 50)}</span>
         </div>
         <div className="terminal-actions">
-          <button className="icon-btn" onClick={() => setOutput("")} title="Clear">
+          <button className="icon-btn" onClick={() => setOutput("")} title="Clear output" aria-label="Clear output">
             <Trash2 size={14} />
           </button>
           {running && (
             <button
               className="icon-btn"
               onClick={() => runId && window.orinos.killCommand(runId)}
-              title="Stop"
+              title="Stop command"
+              aria-label="Stop command"
             >
               <Square size={13} />
             </button>
           )}
-          <button className="icon-btn" onClick={onClose} title="Close">
+          <button className="icon-btn" onClick={onClose} title="Close terminal" aria-label="Close terminal">
             <X size={15} />
           </button>
         </div>
@@ -428,7 +474,7 @@ export function TerminalDrawer({
         {output || "Run a command in your workspace. Output appears here."}
       </pre>
       <div className="terminal-input-row">
-        <span className="terminal-prompt">❯</span>
+        <span className="terminal-prompt" aria-hidden="true">❯</span>
         <input
           ref={inputRef}
           value={command}
@@ -453,10 +499,11 @@ export function TerminalDrawer({
           }}
           placeholder="npm test"
           spellCheck={false}
+          aria-label="Terminal command"
           disabled={running}
         />
         <button className="btn primary small" onClick={start} disabled={running || !command.trim()}>
-          {running ? <Loader2 size={12} className="spin" /> : "Run"}
+          {running ? <LatticeLoader /> : "Run"}
         </button>
       </div>
     </div>
@@ -471,10 +518,14 @@ export function Toast({ message, onClose }: { message: string | null; onClose: (
   }, [message, onClose]);
   if (!message) return null;
   return (
-    <div className="toast">
-      <Check size={14} />
+    <div className="toast" role="status" aria-live="polite">
+      <span className="toast-mark">
+        <StatusMark state="ok" />
+      </span>
       <span>{message}</span>
-      <button onClick={onClose}><X size={12} /></button>
+      <button onClick={onClose} aria-label="Dismiss notification">
+        <X size={12} />
+      </button>
     </div>
   );
 }

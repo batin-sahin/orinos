@@ -33,7 +33,7 @@ export function defaultConfig(): AppConfig {
     autoApprove: false,
     maxSteps: 40,
     temperature: 0.7,
-    theme: "midnight",
+    theme: "paper",
     customProviders: [],
     recentModels: [],
   };
@@ -60,6 +60,7 @@ function sanitizeConfig(raw: unknown): AppConfig {
   if (typeof merged.workspace !== "string" || !merged.workspace) merged.workspace = base.workspace;
   if (typeof merged.provider !== "string" || !merged.provider) merged.provider = base.provider;
   if (typeof merged.model !== "string" || !merged.model) merged.model = base.model;
+  if (merged.theme !== "paper" && merged.theme !== "carbon") merged.theme = "paper";
   return merged;
 }
 
