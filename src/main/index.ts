@@ -35,6 +35,9 @@ function createWindow(): void {
 
   setWindow(win);
   buildMenu(win);
+  // A slightly enlarged default keeps dense instrument text readable on
+  // laptop displays. View → Zoom still gives people direct control.
+  win.webContents.setZoomFactor(1.08);
 
   win.webContents.setWindowOpenHandler(({ url }) => {
     if (/^https?:\/\//i.test(url)) void shell.openExternal(url);

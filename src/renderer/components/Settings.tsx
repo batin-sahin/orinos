@@ -42,8 +42,8 @@ interface SettingsProps {
 type Tab = "general" | "providers" | "about";
 
 const THEMES = [
-  { id: "paper", label: "Enamel", note: "Orange on pale stock" },
-  { id: "carbon", label: "Carbon", note: "Orange on graphite" },
+  { id: "paper", label: "Enamel", note: "Drafting Blue on pale stock" },
+  { id: "carbon", label: "Carbon", note: "Drafting Blue on graphite" },
 ];
 
 export function Settings(props: SettingsProps) {

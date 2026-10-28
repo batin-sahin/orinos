@@ -82,7 +82,7 @@ orinos config --path
 
 `npm start` opens the Electron app. It adds:
 
-- Session log and search in the orange rail
+- Session log and search in the Drafting Blue rail
 - Streaming chat with reasoning, tool cards, and per-run accounting
 - Model picker with catalog search and key status
 - Command palette (`⌘K` / `Ctrl+K`)
@@ -173,9 +173,13 @@ The renderer is code-led: system font stack fallbacks, self-hosted Barlow / Barl
 
 ## Design
 
-Orinos uses **Overprint**, a field-manual visual system: an International Orange rail, cool pale enamel stock, graphite ink, square geometry, 1px rules, and a continuous execution spine. The palette and direction were chosen from research into durable workplace tools rather than generic AI gradients. See `DESIGN.md` for the system, motion rules, and accessibility decisions.
+Orinos uses **Overprint**, a field-manual visual system: a muted Drafting Blue rail, cool pale enamel stock, graphite ink, square geometry, 1px rules, and a continuous execution spine. The palette and direction were chosen from research into durable workplace tools rather than generic AI gradients. See `DESIGN.md` for the system, motion rules, and accessibility decisions.
 
 Interface motion is adapted from [React Bits](https://reactbits.dev) by David Haz, used under its MIT + Commons Clause license and re-implemented for this surface. Typefaces are Barlow, Barlow Condensed, and Spline Sans Mono under the SIL Open Font License. Provider data comes from models.dev.
+
+## Roadmap
+
+The next pass focuses on trust and continuity: context compaction, checkpoints and rollback, bounded memory, a project-context hierarchy, and session content search. Subagents, MCP, and provider fallback follow. See [ROADMAP.md](ROADMAP.md) for the prioritized plan, effort estimates, acceptance criteria, and the Hermes Agent research behind it.
 
 ## License
 

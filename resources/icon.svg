@@ -1,8 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
-  <!-- Orinos app icon: International Orange field, graphite construction mark. -->
-  <rect x="82" y="82" width="860" height="860" rx="196" fill="#f04b1f"/>
+  <!-- Orinos app icon: Drafting Blue field, paper construction mark. -->
+  <rect x="82" y="82" width="860" height="860" rx="196" fill="#355766"/>
   <g transform="translate(232 232) scale(17.5)">
-    <path d="M3 3h19M3 3v26h26V9" fill="none" stroke="#171a18" stroke-width="2.4" stroke-linecap="square" stroke-linejoin="miter"/>
-    <rect x="11" y="11" width="10" height="10" fill="#171a18"/>
+    <path d="M3 3h19M3 3v26h26V9" fill="none" stroke="#eef1ea" stroke-width="2.4" stroke-linecap="square" stroke-linejoin="miter"/>
+    <rect x="11" y="11" width="10" height="10" fill="#eef1ea"/>
   </g>
 </svg>

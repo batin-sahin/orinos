@@ -2,8 +2,9 @@
 name: Orinos
 description: A working field manual for delegated software work.
 colors:
-  international-orange: "#f04b1f"
-  burnt-orange: "#b3360d"
+  drafting-blue: "#355766"
+  ink-blue: "#33586b"
+  deep-blue: "#274655"
   enamel-stock: "#e7ebe4"
   enamel-surface: "#eef1ea"
   enamel-deep: "#dfe4dc"
@@ -20,10 +21,12 @@ colors:
   carbon-muted: "#98a193"
   carbon-pine: "#6bd49e"
   carbon-brick: "#ff8673"
-  on-accent: "#fff"
+  carbon-rail: "#446b7c"
+  carbon-accent: "#9cc3d3"
+  on-accent: "#eef1ea"
   mask-ink: "#000"
-  terminal-hot: "#ff7a50"
-  rail-key-rule: "rgba(255, 255, 255, 0.28)"
+  terminal-hot: "#7fa8ba"
+  rail-key-rule: "rgba(238, 241, 234, 0.3)"
   terminal-hover: "rgba(255, 255, 255, 0.06)"
   modal-scrim: "rgba(0, 0, 0, 0.62)"
   approval-scrim: "rgba(0, 0, 0, 0.72)"
@@ -37,25 +40,25 @@ typography:
     letterSpacing: "0.005em"
   headline:
     fontFamily: "Barlow Condensed, Barlow, sans-serif"
-    fontSize: "27px"
+    fontSize: "28px"
     fontWeight: 600
     lineHeight: 1
     letterSpacing: "0.01em"
   body:
     fontFamily: "Barlow, ui-sans-serif, system-ui, sans-serif"
-    fontSize: "14.5px"
+    fontSize: "15px"
     fontWeight: 400
     lineHeight: 1.64
     letterSpacing: "normal"
   label:
     fontFamily: "Barlow Condensed, Barlow, sans-serif"
-    fontSize: "10px"
+    fontSize: "11px"
     fontWeight: 600
     lineHeight: 1
     letterSpacing: "0.12em"
   mono:
     fontFamily: "Spline Sans Mono, SFMono-Regular, Consolas, monospace"
-    fontSize: "10.5px"
+    fontSize: "11.5px"
     fontWeight: 400
     lineHeight: 1.55
     letterSpacing: "normal"
@@ -72,15 +75,15 @@ spacing:
   grid: "88px"
 components:
   button-primary:
-    backgroundColor: "{colors.international-orange}"
-    textColor: "{colors.graphite-ink}"
+    backgroundColor: "{colors.ink-blue}"
+    textColor: "{colors.on-accent}"
     rounded: "{rounded.square}"
     typography: "{typography.label}"
     padding: "0 12px"
     height: "32px"
   button-primary-hover:
-    backgroundColor: "{colors.burnt-orange}"
-    textColor: "#ffffff"
+    backgroundColor: "{colors.deep-blue}"
+    textColor: "{colors.on-accent}"
     rounded: "{rounded.square}"
     height: "32px"
   button-secondary:
@@ -103,8 +106,8 @@ components:
     padding: "0 9px"
     height: "34px"
   nav-rail:
-    backgroundColor: "{colors.international-orange}"
-    textColor: "{colors.graphite-ink}"
+    backgroundColor: "{colors.drafting-blue}"
+    textColor: "{colors.on-accent}"
     rounded: "{rounded.square}"
     typography: "{typography.body}"
     width: "288px"
@@ -145,27 +148,28 @@ components:
 
 **Creative North Star: "The Overprint Field Manual"**
 
-Orinos looks like a working document produced by someone who expects to be held to it. The screen is enamel stock, not glass: a cool pale green-grey field with graphite ink, one International Orange rail, and a fine halftone grain that sits on the paper rather than in front of it. The world is printed, measured, and annotated. It is not a console, a cockpit, or a chat product dressed in developer clothing.
+Orinos looks like a working document produced by someone who expects to be held to it. The screen is enamel stock, not glass: a cool pale green-grey field with graphite ink, one Drafting Blue rail, and a fine halftone grain that sits on the paper rather than in front of it. The world is printed, measured, and annotated. It is not a console, a cockpit, or a chat product dressed in developer clothing.
 
-The interface is dense because the work is dense. Small machine data sits in Spline Sans Mono beside condensed procedure labels and Barlow prose. One-pixel rules do the structural work; thick borders are reserved for the orange rail, the composer's 2px top edge, and the approval flag. Every screen answers three questions in order: what is running, what was touched, and what needs a decision. The execution spine is the signature move: assistant work accumulates in one continuous vertical trace, with numbered steps and duration ticks that remain after the run finishes.
+The interface is dense because the work is dense. Small machine data sits in Spline Sans Mono beside condensed procedure labels and Barlow prose. One-pixel rules do the structural work; thick borders are reserved for the blue rail, the composer's 2px top edge, and the approval flag. Every screen answers three questions in order: what is running, what was touched, and what needs a decision. The execution spine is the signature move: assistant work accumulates in one continuous vertical trace, with numbered steps and duration ticks that remain after the run finishes.
 
 The tone is flat, factual, and unhurried. Motion is brief and mechanical: a lattice loader, a status pulse, a measured track, a single spark on send. Nothing floats without a reason, nothing glows, and nothing tries to make the agent feel magical. The product earns trust by showing a legible record, not by performing intelligence.
 
 **Key Characteristics:**
-- International Orange as a full navigation field, never a gradient or a decorative wash.
+- Drafting Blue as a full navigation field, never a gradient or a decorative wash.
 - Cool enamel stock, graphite ink, pine for verified, brick for failed.
 - Barlow, Barlow Condensed, and Spline Sans Mono; no display system font.
-- Square geometry, 1px rules, 2px orange work edges, static grain.
+- Square geometry, 1px rules, 2px blue work edges, static grain.
 - Continuous execution spine with numbered steps and measured durations.
 - Dense operator layout with a 980px reading measure and a 288px rail.
 
 ## Colors
 
-The palette is a print-shop system: one saturated ink, one cool stock, and three semantic signal colors.
+The palette is a print-shop system: one deep blue field, one cool stock, and three semantic signal colors.
 
 ### Primary
-- **International Orange** (#f04b1f): The sidebar field, the composer's 2px top rule, the send key, the approval flag, and selected-step accents. It owns the rail as a full surface, not an accent stripe.
-- **Burnt Orange** (#b3360d): Links, hovered primary buttons, focus rings, active step borders, and orange text on pale stock. It is the legible ink version of the rail.
+- **Drafting Blue** (#355766): The sidebar field. It owns the rail as a full surface, not an accent stripe.
+- **Ink Blue** (#33586b): The composer's 2px top rule, the send key, the approval flag, links, focus rings, active step borders, and blue text on pale stock. It is the legible ink version of the rail.
+- **Deep Blue** (#274655): Hovered primary buttons and other pressed accent states.
 
 ### Secondary
 - **Pine Verified** (#1f6a46): Successful tool states, the ready dot, configured keys, and the local-only guarantee. In Carbon it lifts to #6bd49e.
@@ -181,18 +185,19 @@ The palette is a print-shop system: one saturated ink, one cool stock, and three
 - **Rule** (#c3cbc0): Hairline dividers and table borders. **Rule Strong** (#a6b0a3) carries interactive borders and the execution spine.
 - **Code Field** (#1b1e1b): Fenced code and tool output, always with #e9ede4 text.
 - **Carbon Field** (#171a18), **Carbon Surface** (#1e221f), **Carbon Ink** (#edf0e7), **Carbon Muted** (#98a193): The dark theme's equivalent stock and ink.
+- **Carbon Rail** (#446b7c) and **Carbon Accent** (#9cc3d3): The dark theme's rail field and light accent ink.
 
 ### Utility
-- **On Accent** (#fff): Hover labels on burnt-orange primary actions.
+- **On Accent** (#eef1ea / #0f1b21): Labels on filled accent controls; paper in the light theme, deep ink in Carbon.
 - **Mask Ink** (#000): The opaque stop in grid and splash mask stencils. It is never visible paint.
-- **Terminal Hot** (#ff7a50): Terminal hover border and fill on Carbon.
-- **Rail Key Rule** (rgba(255, 255, 255, 0.28)): Keyboard-key borders on the orange rail.
+- **Terminal Hot** (#7fa8ba / #9cc3d3): Terminal control hover in the light and dark themes.
+- **Rail Key Rule** (rgba(238, 241, 234, 0.3)): Keyboard-key borders on the blue rail.
 - **Terminal Hover** (rgba(255, 255, 255, 0.06)): Icon-button fill inside the terminal drawer.
 - **Modal Scrim** / **Approval Scrim** (rgba(0, 0, 0, 0.62) / 0.72): Carbon's two overlay depths.
 - **Toast Shadow** (rgba(0, 0, 0, 0.22)): The toast's lift over the document.
 
 ### Named Rules
-**The Field Rule.** Orange is either a full surface or a rule of 1–2px. It never becomes a glow, gradient, translucent glass, or decorative side tab.
+**The Field Rule.** Blue is either a full surface or a rule of 1–2px. It never becomes a glow, gradient, translucent glass, or decorative side tab.
 
 **The Signal Rule.** Pine and brick describe outcomes; they never decorate a neutral element. Status must also carry a shape, label, or mark so color is not the only channel.
 
@@ -206,14 +211,14 @@ The palette is a print-shop system: one saturated ink, one cool stock, and three
 
 ### Hierarchy
 - **Display** (600, clamp 46–64px, 0.89): The empty-state headline and splash wordmark. Uppercase, tightly leaded, left-aligned to the working grid.
-- **Headline** (600, 27px, 1): Modal titles, settings headers, and approval questions. Uppercase with slight positive tracking.
-- **Title** (600, 17–22px, 1.1): Skill detail titles, protocol rows, and provider names. Sentence case in body contexts.
-- **Body** (400, 14.5px, 1.64): Assistant prose, settings copy, and descriptions. The reading measure stops at 74ch inside a 980px column.
-- **Label** (600, 9–11px, 0.08–0.14em, uppercase): Section titles, field labels, buttons, and status words. Condensed so density does not become shouting.
-- **Mono** (400–500, 8–11.5px, 1.55): Paths, model IDs, token counts, durations, commands, and code. Tabular numerals for all measurements.
-- **Microtype Ramp** (`--text-*` tokens, 7–56px): The instrument scale in half-step and single-step increments: 7, 7.5, 8, 8.5, 9, 9.5, 10, 10.5, 11, 11.5, 12, 12.5, 13, 14, 14.5, 15, 17, 18, 21, 22, 23, 26, 27, 28, 30, 40, 42, 56px. Every literal size in the stylesheet resolves through this ramp; 42/56px are the compact empty-state display only.
+- **Headline** (600, 28px, 1): Modal titles, settings headers, and approval questions. Uppercase with slight positive tracking.
+- **Title** (600, 18–23px, 1.1): Skill detail titles, protocol rows, and provider names. Sentence case in body contexts.
+- **Body** (400, 15px, 1.64): Assistant prose, settings copy, and descriptions. The reading measure stops at 74ch inside a 980px column.
+- **Label** (600, 10–12px, 0.08–0.14em, uppercase): Section titles, field labels, buttons, and status words. Condensed so density does not become shouting.
+- **Mono** (400–500, 9–12.5px, 1.55): Paths, model IDs, token counts, durations, commands, and code. Tabular numerals for all measurements.
+- **Microtype Ramp** (`--text-*` tokens, 8–58px): The instrument scale in half-step and single-step increments: 8, 8.5, 9, 9.5, 10, 10.5, 11, 11.5, 12, 12.5, 13, 13.5, 14, 15, 15.5, 16, 18, 19, 22, 23, 24, 27, 28, 29, 31, 42, 44, 58px. Every literal size in the stylesheet resolves through this ramp; 42/44/58px are the compact empty-state display only. The desktop window applies an additional 1.08 scale so the dense instrument remains readable on laptop displays.
 
-**The Microtype Rule.** Dense instrumentation is intentional, but the reading body never falls below 14.5px and prose stays inside the 74ch measure. Half-step sizes are for mono data, labels, and dense controls; they are not a license to shrink assistant or settings copy.
+**The Microtype Rule.** Dense instrumentation is intentional, but the reading body never falls below 15px and prose stays inside the 74ch measure. Half-step sizes are for mono data, labels, and dense controls; they are not a license to shrink assistant or settings copy.
 
 ### Named Rules
 **The Instrument Rule.** Mono is for data the machine produced or the operator will type. It is never the voice of a marketing line or a decorative "technical" texture.
@@ -222,11 +227,30 @@ The palette is a print-shop system: one saturated ink, one cool stock, and three
 
 ## Layout
 
-The desktop shell is a two-column instrument: a fixed 288px orange navigation rail and a fluid main field. The rail carries the 30px mark, the wordmark, a 42px new-chat key, search, a grouped session log, and a status footer. The main field begins with a 56px chat header, then a scrolling transcript on a 980px measure, then a docked composer. The transcript gutter is 104px on wide screens (84px at 1180, 66px at 980) so author labels have a stable column.
+The desktop shell is a two-column instrument: a fixed 288px Drafting Blue navigation rail and a fluid main field. The rail carries the 30px mark, the wordmark, a 46px new-chat key, search, a grouped session log, and a status footer. The main field begins with a 56px chat header, then a scrolling transcript on a 980px measure, then a docked composer. The transcript gutter is 104px on wide screens (84px at 1180, 66px at 980) so author labels have a stable column. At the default 1.08 window scale, the 288px rail occupies 311 screen pixels and the reading text renders 8% larger without changing layout breakpoints.
 
 The empty state and splash both expose an 88px vertical grid as an armature. It is a working grid, masked at the edges, not a full-page pattern. Sections use 22px vertical padding, 16px internal groups, and 8px micro-gaps. The composer is the densest region: an input register line, a 50px minimum textarea, and a control bar that keeps model, attachments, workspace, auto-approve, and send in one reachable row.
 
 Responsive behavior is desktop-first. At 1180px the rail narrows to 264px and the workspace leaves the header subtitle. At 980px the rail becomes 248px, message gutters tighten, and header action labels collapse to icons. The shipped window has a 980px minimum; below that, the layout can stack the composer and hide non-essential metadata, but the pointer-first layout is not the target.
+
+## Accessibility
+
+Text and interface marks clear WCAG 2.2 AA for their size and role. The values below are computed from the shipping tokens, not estimated:
+
+| Pair | Light | Carbon |
+| --- | ---: | ---: |
+| Primary ink on app stock | 14.53:1 | 15.22:1 |
+| Secondary ink on app stock | 6.69:1 | 9.38:1 |
+| Tertiary ink on app stock | 5.07:1 | 6.56:1 |
+| Ink Blue / Carbon accent on app stock | 6.33:1 | 9.32:1 |
+| Paper on Drafting Blue rail | 6.80:1 | 5.06:1 |
+| Secondary rail text (rest / hover / active) | 4.90 / 5.69 / 6.22:1 | 4.85 / 5.86 / 6.41:1 |
+| Pine verified on app stock | 5.42:1 | 9.63:1 |
+| Brick failed on app stock | 5.76:1 | 7.44:1 |
+| Amber attention on app stock | 4.91:1 | 9.40:1 |
+| On-accent label on filled accent | 6.70:1 | 9.31:1 |
+
+The rail's hover and active washes are black translucency, not light overlays: they deepen the field so secondary light text gains contrast instead of losing it. Focus is a 2px solid Ink Blue ring with a 2px offset, or paper on the rail. Status always pairs color with a label or shape. `prefers-reduced-motion` removes transforms, travel, and looping animation while preserving state changes. The 1.08 default window scale is a floor, not a lock; View → Zoom remains available, and dense panes scroll rather than compress.
 
 ## Elevation & Depth
 
@@ -248,19 +272,19 @@ The system is flat by default. Depth comes from tonal layering: stock, surface, 
 
 Everything is square. Buttons, inputs, chips, modals, code blocks, avatars, switches, and status marks use a 0px radius. The mark is angular; the only circular forms are icon glyphs and the browser's native scrollbar thumb. Borders are 1px at rest and 2px when a work edge needs emphasis (composer top, terminal top, approval flag). The visual vocabulary is the registration mark, the rule, the tick, and the numbered square.
 
-The app icon carries the same language: an International Orange squircle field with the graphite open-frame mark and a solid center square. The frame is deliberately open at the top-right, matching the in-app wordmark.
+The app icon carries the same language: a Drafting Blue squircle field with the paper open-frame mark and a solid center square. The frame is deliberately open at the top-right, matching the in-app wordmark.
 
 ## Components
 
 ### Buttons
 - **Shape:** Square (0px radius), 32px standard height, 27px small.
-- **Primary:** International Orange field, graphite ink label, condensed uppercase, 12px horizontal padding. Hover shifts to burnt orange with white text. Disabled primary returns to a neutral deep surface with tertiary ink rather than a faded orange.
+- **Primary:** Ink Blue field, paper label, condensed uppercase, 12px horizontal padding. Hover shifts to Deep Blue with paper text. Disabled primary returns to a neutral deep surface with tertiary ink rather than a faded blue.
 - **Secondary:** Transparent field, 1px rule-strong border, graphite label. Hover fills enamel deep.
 - **Destructive:** Transparent with a brick border and brick label; hover fills brick with stock text.
-- **Focus:** 2px burnt-orange outline with 2px offset, or graphite on the orange rail.
+- **Focus:** 2px Ink Blue outline with 2px offset, or paper on the Drafting Blue rail.
 
 ### Chips
-- **Style:** 17px-high square chips with 1px rule borders, mono 7.5–8.5px uppercase labels, and no radius. Variants carry semantic border color: orange for built-in, pine for user, rule for project.
+- **Style:** 17px-high square chips with 1px rule borders, mono 7.5–8.5px uppercase labels, and no radius. Variants carry semantic border color: blue for built-in, pine for user, rule for project.
 - **State:** Chips are labels, not toggles; selected state belongs to the parent row or button.
 
 ### Cards / Containers
@@ -271,20 +295,20 @@ The app icon carries the same language: an International Orange squircle field w
 - **Internal Padding:** 12–22px depending on density; modal headers use 18px 22px.
 
 ### Inputs / Fields
-- **Style:** 34px-high square field on #f4f6f0, 1px rule-strong border, 12.5px Barlow text, 9px horizontal padding.
-- **Focus:** Border shifts to burnt orange with a 2px orange-soft ring. The ring is a state cue, not decoration.
+- **Style:** 34px-high square field on #f4f6f0, 1px rule-strong border, 13.5px Barlow text, 9px horizontal padding.
+- **Focus:** Border shifts to Ink Blue with a 2px accent-soft ring. The ring is a state cue, not decoration.
 - **Error / Disabled:** Errors use brick text and border; disabled controls keep their geometry and drop to tertiary ink. Placeholders use graphite tertiary at full opacity.
 
 ### Navigation
-- **Rail:** 288px International Orange field with a 1px dark rule on the right. Brand block at 58px, new-chat key at 42px, grouped session rows with a current-position square, and a footer status line.
+- **Rail:** 288px Drafting Blue field with a 1px light rule on the right. Brand block at 58px, new-chat key at 46px, grouped session rows with a current-position square, and a footer status line.
 - **Header:** 56px enamel field, 1px rule bottom, chat title and mono metadata on the left, command palette and icon actions on the right. At 980px labels collapse to icons.
-- **Active State:** Session rows get a dark 1px border and a darker field; the current session also carries a 7px square marker.
+- **Active State:** Session rows get a light 1px border and a lighter field; the current session also carries a 7px square marker.
 
 ### Execution Spine
 The signature component. Assistant messages in one turn group into a single run. A 1px graphite spine runs down the left of the run, and each tool call is a 21px numbered square on that spine. The step body carries a condensed tool name, a mono summary, a measured duration tick, and an OK/FAILED/RUNNING label with a status mark. The spine persists after the run ends; it is the durable record, not a transient thinking animation.
 
 ### Composer
-A 1px rule-strong console with a 2px International Orange top edge, an "INPUT / READY" register line, a flexible textarea, and a control bar. The model chip, attachment, workspace, and auto-approve chip are all square. Send is the only filled orange control in the main field; it turns graphite when stopping.
+A 1px rule-strong console with a 2px Ink Blue top edge, an "INPUT / READY" register line, a flexible textarea, and a control bar. The model chip, attachment, workspace, and auto-approve chip are all square. Send is the only filled blue control in the main field; it turns graphite when stopping.
 
 ### Code and Tool Output
 Fenced code and tool output use the dark code field (#1b1e1b), 1px code rule, 10.5–11.5px Spline Sans Mono, and a pinned "Copy" control. Tool output keeps its own scroll container rather than stretching the transcript.
@@ -292,8 +316,8 @@ Fenced code and tool output use the dark code field (#1b1e1b), 1px code rule, 10
 ## Do's and Don'ts
 
 ### Do:
-- **Do** give the orange rail a full field and keep it free of gradients, glass, and glow.
-- **Do** use 1px rules for structure and 2px orange only for the composer, terminal, and approval work edges.
+- **Do** give the blue rail a full field and keep it free of gradients, glass, and glow.
+- **Do** use 1px rules for structure and 2px blue only for the composer, terminal, and approval work edges.
 - **Do** keep measurements, paths, model IDs, and commands in Spline Sans Mono with tabular numerals.
 - **Do** preserve the continuous execution spine and numbered step order after a run finishes.
 - **Do** pair semantic color with a label, mark, or shape so status survives grayscale and color-vision differences.
