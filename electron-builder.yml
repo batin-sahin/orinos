@@ -1,0 +1,45 @@
+appId: com.orinos.app
+productName: Orinos
+copyright: Copyright © 2026 Asael
+directories:
+  output: release
+  buildResources: resources
+files:
+  - dist/**/*
+  - package.json
+  - "!**/*.map"
+  - "!**/*.ts"
+asar: true
+npmRebuild: false
+mac:
+  category: public.app-category.developer-tools
+  darkModeSupport: true
+  icon: resources/icon.icns
+  target:
+    - target: dmg
+      arch:
+        - arm64
+    - target: zip
+      arch:
+        - arm64
+  hardenedRuntime: false
+  gatekeeperAssess: false
+win:
+  icon: resources/icon.png
+  target:
+    - target: nsis
+      arch:
+        - x64
+    - target: portable
+      arch:
+        - x64
+nsis:
+  oneClick: false
+  perMachine: false
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: true
+  artifactName: Orinos-Setup-${version}.${ext}
+portable:
+  artifactName: Orinos-Portable-${version}.${ext}
+dmg:
+  artifactName: Orinos-${version}-${arch}.${ext}

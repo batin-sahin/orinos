@@ -1,0 +1,49 @@
+{
+  "name": "orinos",
+  "productName": "Orinos",
+  "version": "0.1.0",
+  "description": "Orinos — a cross-platform AI agent harness with a terminal UI and a desktop app.",
+  "author": "Asael",
+  "license": "MIT",
+  "type": "module",
+  "main": "dist/main/index.cjs",
+  "bin": {
+    "orinos": "dist/cli.cjs"
+  },
+  "scripts": {
+    "catalog": "node scripts/fetch-catalog.mjs",
+    "build:cli": "node scripts/build.mjs cli",
+    "build:main": "node scripts/build.mjs main",
+    "build:renderer": "vite build",
+    "build": "npm run catalog && npm run build:cli && npm run build:main && npm run build:renderer",
+    "typecheck": "tsc --noEmit",
+    "dev": "vite",
+    "dev:desktop": "npm run build:main && npm run build:renderer && electron .",
+    "start": "npm run build && electron .",
+    "cli": "node dist/cli.cjs",
+    "pack:mac": "npm run build && electron-builder --mac",
+    "pack:win": "npm run build && electron-builder --win",
+    "smoke": "npm run build && electron . --smoke"
+  },
+  "dependencies": {
+    "commander": "^14.0.0",
+    "dompurify": "^3.2.6",
+    "lucide-react": "^1.63.0",
+    "marked": "^16.0.0",
+    "yaml": "^2.8.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.3.0",
+    "@types/react": "^19.1.10",
+    "@types/react-dom": "^19.1.7",
+    "@vitejs/plugin-react": "^5.0.0",
+    "electron": "^38.0.0",
+    "electron-builder": "^26.0.12",
+    "esbuild": "^0.25.9",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
+    "sharp": "^0.34.3",
+    "typescript": "^5.9.2",
+    "vite": "^7.1.3"
+  }
+}
