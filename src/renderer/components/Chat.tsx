@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   ArrowUpRight,
   BookOpen,
@@ -12,6 +12,7 @@ import {
   FileText,
   FolderTree,
   Globe,
+  MoreHorizontal,
   PanelLeftOpen,
   Search,
   Terminal,
@@ -537,7 +538,9 @@ export function ChatHeader({
   onOpenPalette: () => void;
 }) {
   const [editing, setEditing] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const [value, setValue] = useState(title);
+  const closeMenu = useCallback(() => setMenuOpen(false), []);
   useEffect(() => setValue(title), [title]);
 
   return (
@@ -594,16 +597,82 @@ export function ChatHeader({
           <span>Commands</span>
           <kbd>⌘K</kbd>
         </button>
-        <button className="icon-btn" onClick={onOpenTerminal} title="Terminal" aria-label="Terminal">
-          <Terminal size={16} />
-        </button>
-        <button className="icon-btn" onClick={onOpenSkills} title="Skills" aria-label="Skills">
-          <BookOpen size={16} />
-        </button>
-        <button className="icon-btn" onClick={onOpenSettings} title="Settings" aria-label="Settings">
-          <Wrench size={16} />
-        </button>
+        <div className="header-menu-anchor">
+          <button
+            className="icon-btn"
+            onClick={() => setMenuOpen((v) => !v)}
+            title="More actions"
+            aria-label="More actions"
+            aria-haspopup="menu"
+            aria-expanded={menuOpen}
+          >
+            <MoreHorizontal size={16} />
+          </button>
+          {menuOpen && (
+            <HeaderMenu
+              onClose={closeMenu}
+              onOpenTerminal={onOpenTerminal}
+              onOpenSkills={onOpenSkills}
+              onOpenSettings={onOpenSettings}
+            />
+          )}
+        </div>
       </div>
     </header>
+  );
+}
+
+function HeaderMenu({
+  onClose,
+  onOpenTerminal,
+  onOpenSkills,
+  onOpenSettings,
+}: {
+  onClose: () => void;
+  onOpenTerminal: () => void;
+  onOpenSkills: () => void;
+  onOpenSettings: () => void;
+}) {
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    ref.current?.querySelector<HTMLButtonElement>(".menu-item")?.focus();
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [onClose]);
+
+  const run = (next: () => void) => {
+    next();
+    onClose();
+  };
+
+  return (
+    <>
+      <div className="popover-shade" onClick={onClose} />
+      <div ref={ref} className="menu header-menu" role="menu" aria-label="More actions">
+        <button
+          role="menuitem"
+          className="menu-item"
+          onClick={() => run(onOpenTerminal)}
+          title="Toggle the terminal drawer"
+        >
+          <Terminal size={15} />
+          <span>Terminal</span>
+          <kbd>⌘J</kbd>
+        </button>
+        <button role="menuitem" className="menu-item" onClick={() => run(onOpenSkills)} title="Browse installed skills">
+          <BookOpen size={15} />
+          <span>Skills</span>
+        </button>
+        <button role="menuitem" className="menu-item" onClick={() => run(onOpenSettings)} title="Provider keys, approvals, theme">
+          <Wrench size={15} />
+          <span>Settings</span>
+          <kbd>⌘,</kbd>
+        </button>
+      </div>
+    </>
   );
 }

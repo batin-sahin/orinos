@@ -11,6 +11,7 @@ import {
   Search,
   ShieldAlert,
   ShieldCheck,
+  SlidersHorizontal,
   Square,
   Terminal,
   X,
@@ -45,8 +46,10 @@ interface ComposerProps {
 export function Composer(props: ComposerProps) {
   const textarea = useRef<HTMLTextAreaElement>(null);
   const [pickerOpen, setPickerOpen] = useState(false);
+  const [toolsOpen, setToolsOpen] = useState(false);
   const [query, setQuery] = useState("");
   const searchRef = useRef<HTMLInputElement>(null);
+  const toolsRef = useRef<HTMLDivElement>(null);
 
   const provider = props.providers.find((p) => p.id === props.selection.provider);
   const local = /localhost|127\.0\.0\.1/.test(provider?.api || "");
@@ -62,6 +65,16 @@ export function Composer(props: ComposerProps) {
     if (pickerOpen) setTimeout(() => searchRef.current?.focus(), 30);
     else setQuery("");
   }, [pickerOpen]);
+
+  useEffect(() => {
+    if (!toolsOpen) return;
+    toolsRef.current?.querySelector<HTMLButtonElement>(".menu-item")?.focus();
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setToolsOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [toolsOpen]);
 
   const results = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -129,7 +142,20 @@ export function Composer(props: ComposerProps) {
 
       <div className={`composer ${props.running ? "busy" : ""}`} aria-busy={props.running}>
         <div className="composer-reg">
-          <span>Input</span>
+          <span>
+            Input
+            <button
+              className="composer-reg-auto"
+              onClick={props.onToggleAuto}
+              title={
+                props.autoApprove
+                  ? "Auto-approve is on — tools run without asking. Click to require approvals."
+                  : "Auto-approve is off — risky tools ask first. Click to run without asking."
+              }
+            >
+              AUTO {props.autoApprove ? "ON" : "OFF"}
+            </button>
+          </span>
           <span className="composer-reg-meta">
             {props.running ? "Agent running" : "Ready"}{" "}
             <span className="composer-reg-square" aria-hidden="true" />
@@ -238,24 +264,68 @@ export function Composer(props: ComposerProps) {
               </>
             )}
 
-            <button className="composer-icon" onClick={props.onAttach} title="Attach files" aria-label="Attach files">
-              <Paperclip size={15} />
-            </button>
             <span className="composer-workspace" title={props.workspace}>
               <Folder size={12} />
               {shortPath(props.workspace, 26)}
             </span>
-            <button className="composer-icon" onClick={props.onOpenTerminal} title="Terminal" aria-label="Terminal">
-              <Terminal size={15} />
-            </button>
-            <button
-              className={`auto-chip ${props.autoApprove ? "on" : ""}`}
-              onClick={props.onToggleAuto}
-              title={props.autoApprove ? "Tools run without asking" : "Risky tools ask for approval"}
-            >
-              {props.autoApprove ? <ShieldCheck size={13} /> : <ShieldAlert size={13} />}
-              <span>{props.autoApprove ? "auto" : "ask"}</span>
-            </button>
+
+            <div className="tools-wrap">
+              <button
+                className={`tools-chip ${toolsOpen ? "open" : ""}`}
+                onClick={() => setToolsOpen((v) => !v)}
+                title="Tools: attachments, terminal, auto-approve"
+                aria-haspopup="menu"
+                aria-expanded={toolsOpen}
+              >
+                <SlidersHorizontal size={13} />
+                <span>Tools</span>
+                <ChevronDown size={11} />
+              </button>
+
+              {toolsOpen && (
+                <div ref={toolsRef} className="menu tools-menu" role="menu" aria-label="Composer tools">
+                  <button
+                    role="menuitem"
+                    className="menu-item"
+                    onClick={() => {
+                      setToolsOpen(false);
+                      props.onAttach();
+                    }}
+                    title="Attach files to the next message"
+                  >
+                    <Paperclip size={15} />
+                    <span>Attach files…</span>
+                  </button>
+                  <button
+                    role="menuitem"
+                    className="menu-item"
+                    onClick={() => {
+                      setToolsOpen(false);
+                      props.onOpenTerminal();
+                    }}
+                    title="Run a shell command in this workspace"
+                  >
+                    <Terminal size={15} />
+                    <span>Terminal</span>
+                    <kbd>⌘J</kbd>
+                  </button>
+                  <button
+                    role="menuitem"
+                    className="menu-item"
+                    onClick={props.onToggleAuto}
+                    title={
+                      props.autoApprove
+                        ? "Tools run without asking. Turn this off to restore approvals."
+                        : "Risky tools ask for approval first. Turn this on to run without asking."
+                    }
+                  >
+                    {props.autoApprove ? <ShieldCheck size={15} /> : <ShieldAlert size={15} />}
+                    <span>Auto-approve tools</span>
+                    <span className={`menu-state ${props.autoApprove ? "on" : ""}`}>{props.autoApprove ? "ON" : "OFF"}</span>
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
           <div className="composer-right">
             {props.contextMax ? <span className="composer-context">{formatTokens(props.contextMax)} ctx</span> : null}

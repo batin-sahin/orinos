@@ -38,7 +38,7 @@ export interface ApprovalPayload {
 }
 
 export interface MenuPayload {
-  action: "new-chat" | "settings" | "command-palette" | "toggle-sidebar";
+  action: "new-chat" | "settings" | "command-palette" | "toggle-sidebar" | "toggle-terminal";
 }
 
 export interface OrinosApi {

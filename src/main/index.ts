@@ -10,13 +10,19 @@ const devServer = process.env.ORINOS_DEV_SERVER || "";
 
 app.setName("Orinos");
 if (process.platform === "win32") app.setAppUserModelId("com.orinos.app");
+// Smoke must not fight the installed app for the single-instance lock or touch
+// the real profile; give it a throwaway userData path of its own.
+if (smoke) {
+  app.setPath("userData", path.join(app.getPath("temp"), "orinos-smoke-user"));
+}
 
 let win: BrowserWindow | null = null;
 
 function createWindow(): void {
+  const size = /^(\d+)x(\d+)$/.exec(process.env.ORINOS_SMOKE_SIZE || "");
   win = new BrowserWindow({
-    width: 1380,
-    height: 900,
+    width: size ? Number(size[1]) : 1380,
+    height: size ? Number(size[2]) : 900,
     minWidth: 980,
     minHeight: 640,
     show: false,

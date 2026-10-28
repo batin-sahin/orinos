@@ -619,6 +619,8 @@ export function Settings(props: SettingsProps) {
                 <div className="shortcut-list">
                   <div><kbd>⌘N</kbd> New chat</div>
                   <div><kbd>⌘K</kbd> Command palette</div>
+                  <div><kbd>⌘J</kbd> Toggle terminal</div>
+                  <div><kbd>⌘B</kbd> Toggle sidebar</div>
                   <div><kbd>⌘,</kbd> Settings</div>
                   <div><kbd>↵</kbd> Send message</div>
                   <div><kbd>⇧↵</kbd> New line</div>

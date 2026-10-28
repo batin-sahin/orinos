@@ -279,8 +279,8 @@ The app icon carries the same language: a Drafting Blue squircle field with the 
 ### Buttons
 - **Shape:** Square (0px radius), 32px standard height, 27px small.
 - **Primary:** Ink Blue field, paper label, condensed uppercase, 12px horizontal padding. Hover shifts to Deep Blue with paper text. Disabled primary returns to a neutral deep surface with tertiary ink rather than a faded blue.
-- **Secondary:** Transparent field, 1px rule-strong border, graphite label. Hover fills enamel deep.
-- **Destructive:** Transparent with a brick border and brick label; hover fills brick with stock text.
+- **Secondary:** Transparent field, 1px rule border (not rule-strong), graphite-secondary label. Hover raises to rule-strong border, the deep field, and primary ink. Secondary is a suggestion, not a shout.
+- **Destructive:** Quiet by default — same neutral border and ink-2 text as secondary, so a row of Remove buttons never reads as an alarm strip. Hover confirms intent: brick-soft field, brick border, brick label. Solid brick fill is reserved for in-flight stop controls (the running send button).
 - **Focus:** 2px Ink Blue outline with 2px offset, or paper on the Drafting Blue rail.
 
 ### Chips
@@ -300,15 +300,30 @@ The app icon carries the same language: a Drafting Blue squircle field with the 
 - **Error / Disabled:** Errors use brick text and border; disabled controls keep their geometry and drop to tertiary ink. Placeholders use graphite tertiary at full opacity.
 
 ### Navigation
-- **Rail:** 288px Drafting Blue field with a 1px light rule on the right. Brand block at 58px, new-chat key at 46px, grouped session rows with a current-position square, and a footer status line.
-- **Header:** 56px enamel field, 1px rule bottom, chat title and mono metadata on the left, command palette and icon actions on the right. At 980px labels collapse to icons.
+- **Rail:** 288px Drafting Blue field with a 1px light rule on the right. Brand block at 58px, new-chat key at 46px, grouped session rows with a current-position square (10px gaps, delete on hover and focus-within), and a footer status line.
+- **Header:** 56px enamel field, 1px rule bottom, chat title and mono metadata on the left, `⌘ Commands ⌘K` plus a single `…` More button on the right. The More menu discloses Terminal (`⌘J`), Skills, and Settings (`⌘,`) as 31px menu rows; it opens on click or keyboard focus, runs at 8px action gaps, and closes on Escape or outside click. At 980px labels collapse to icons.
 - **Active State:** Session rows get a light 1px border and a lighter field; the current session also carries a 7px square marker.
+
+### Menus and disclosure
+Menus are part of the surface, not a platform widget: 1px ink border, surface field, shadow, 5px inner padding, 31px rows with a 9px icon gap. A row is icon (graphite tertiary) + label (flex) + right slot (`kbd`, or a small mono state tag for toggles). Hover fills the deep field. Every menu is reachable by keyboard: focus jumps to the first row on open, Tab walks rows, Escape closes and returns focus, and the opened state is mirrored to `aria-expanded`.
+
+Disclosure rules:
+- A region shows at most three sibling controls; everything else lives in one menu or behind hover/focus.
+- Anything that shows on hover must also show on `focus-visible` (and `focus-within` for compound rows), so the keyboard path and the pointer path are identical.
+- State that affects safety is never disclosable: it stays visible as text (composer register `AUTO ON/OFF`), with the toggle one click away.
 
 ### Execution Spine
 The signature component. Assistant messages in one turn group into a single run. A 1px graphite spine runs down the left of the run, and each tool call is a 21px numbered square on that spine. The step body carries a condensed tool name, a mono summary, a measured duration tick, and an OK/FAILED/RUNNING label with a status mark. The spine persists after the run ends; it is the durable record, not a transient thinking animation.
 
 ### Composer
-A 1px rule-strong console with a 2px Ink Blue top edge, an "INPUT / READY" register line, a flexible textarea, and a control bar. The model chip, attachment, workspace, and auto-approve chip are all square. Send is the only filled blue control in the main field; it turns graphite when stopping.
+A 1px rule-strong console with a 2px Ink Blue top edge, an `INPUT · AUTO ON/OFF — READY` register line (the register auto tag is itself a 1px-rule button that toggles approvals), a flexible textarea, and a control bar. The bar keeps exactly three sibling controls: the model chip, the workspace label, and the Tools menu chip; attach, terminal, and auto-approve live in the Tools menu, each with its `kbd` or state tag. Send is the only filled control in the main field; it turns graphite when stopping. Empty-state protocol rows reveal their arrow on hover and focus; approvals pin Allow/Deny to the modal floor with a sticky rule so a long command can never push the keyboard path off-screen.
+
+### Quiet controls, loud process
+Secondary chrome gets quiet on purpose, and the discipline is enforced:
+- **Visible-primary budget:** at most three sibling controls per region. Header = Commands + More. Composer bar = model + Tools + Send.
+- **Spacing before shrinking:** action gaps stay at 7–12px (header 9, composer bar 7, menus 9, approval 10). Buttons never shrink below 27px to compensate for crowding.
+- **Quieter, not missing:** secondary actions lose saturation and border weight, never discoverability. Every quiet control keeps a `title`, a focus ring, and (where useful) a `kbd` printed on the control.
+- **Squaring is load-bearing:** square corners make 1px boundaries and register lines carry the hierarchy, so fewer buttons can say more. This is why the identity stays square while the page calms down.
 
 ### Code and Tool Output
 Fenced code and tool output use the dark code field (#1b1e1b), 1px code rule, 10.5–11.5px Spline Sans Mono, and a pinned "Copy" control. Tool output keeps its own scroll container rather than stretching the transcript.
@@ -323,6 +338,8 @@ Fenced code and tool output use the dark code field (#1b1e1b), 1px code rule, 10
 - **Do** pair semantic color with a label, mark, or shape so status survives grayscale and color-vision differences.
 - **Do** keep the 980px reading measure, 74ch prose limit, and 980px minimum desktop window in mind when adding screens.
 - **Do** respect `prefers-reduced-motion`: remove spatial movement, keep static state cues, and never let motion carry meaning alone.
+- **Do** surface new secondary actions inside the existing More/Tools menus first; add a header or composer control only after the visible-primary budget says no.
+- **Do** verify additions against the review matrix (`scripts/smoke-shots.sh`) so Enamel, Carbon, menus, approval, terminal, narrow, and reduced-motion shots all stay honest.
 
 ### Don't:
 - **Don't** use purple, cyan, neon gradients, glowing orbs, glass panels, or generic centered AI heroes.
@@ -333,3 +350,6 @@ Fenced code and tool output use the dark code field (#1b1e1b), 1px code rule, 10
 - **Don't** use hard offset block shadows; the system is printed, not neobrutalist.
 - **Don't** use section numbers as decoration. Numbers belong only where the sequence is real, as in the execution spine or numbered protocol rows.
 - **Don't** hide the execution trace behind a "show details" control once a run has finished.
+- **Don't** park a safety state (auto-approve, approval result) behind hover or a menu-only path; state is visible text, actions may be disclosed.
+- **Don't** add a fourth sibling control to a toolbar region to expose a secondary action; extend the menu instead.
+- **Don't** replace a quiet control with a bolder border or fill; emphasis belongs to primary controls only.

@@ -268,6 +268,7 @@ export default function App() {
       if (action === "settings") setSettingsOpen(true);
       if (action === "command-palette") setPaletteOpen(true);
       if (action === "toggle-sidebar") setSidebarOpen((v) => !v);
+      if (action === "toggle-terminal") setTerminalOpen((v) => !v);
     });
     return unsubscribe;
   }, [newChat]);
@@ -467,6 +468,7 @@ export default function App() {
       {
         id: "terminal",
         label: "Open terminal",
+        hint: "⌘J",
         icon: <Terminal size={14} />,
         run: () => setTerminalOpen(true),
       },

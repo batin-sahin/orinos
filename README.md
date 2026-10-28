@@ -9,9 +9,11 @@ A local AI agent harness for the desktop and the terminal. One TypeScript core c
 - **One agent loop, two surfaces.** The Electron app and the `orinos` CLI share providers, tools, skills, sessions, and approval rules.
 - **Real tools.** Run commands, read/write/edit files, list directories, grep/glob, search the web, fetch pages, and inspect skills — all inside the workspace you choose.
 - **Visible work.** Assistant turns group into runs with a continuous execution spine: numbered tool steps, durations, outputs, usage, and cost.
+- **Calm by default.** Header is one Commands button plus one More menu; the composer is model + Tools + send; secondary actions (attach, terminal, auto-approve) live in the Tools menu, and approval state is always printed in the composer register (`AUTO ON/OFF`). The rules are normative in [DESIGN.md](DESIGN.md) ("Quiet controls, loud process").
 - **Provider choice.** 233 providers and 8,936 models from [models.dev](https://models.dev), plus custom OpenAI-compatible, Anthropic, and Google endpoints.
 - **Local state.** Sessions and configuration live under `~/.orinos`; keys are stored with `0600` permissions and go only to the provider you select.
-- **Approvals.** File writes and shell commands pause for approval unless you turn on auto-approve or pass `--yes` in the CLI.
+- **Approvals.** File writes and shell commands pause for approval; the dialog pins Allow/Deny to its floor so a long command can never push the buttons out of reach. Auto-approve stays visible in the composer register, not buried in settings.
+- **Honest ledger.** Every turn prints input/output tokens and cost; sessions are JSON files you can delete, so "how big is my agent" is a `du -sh` away. Evidence: [COMPETITIVE_RESEARCH.md](COMPETITIVE_RESEARCH.md).
 
 ## Requirements
 
@@ -85,9 +87,10 @@ orinos config --path
 - Session log and search in the Drafting Blue rail
 - Streaming chat with reasoning, tool cards, and per-run accounting
 - Model picker with catalog search and key status
-- Command palette (`⌘K` / `Ctrl+K`)
+- Command palette (`⌘K` / `Ctrl+K`), terminal drawer (`⌘J`), sidebar (`⌘B`)
+- Header More menu and composer Tools menu so secondary actions never crowd the main field
 - Settings for providers, keys, workspace, approvals, temperature, steps, web search, and theme
-- Inline terminal drawer, skills browser, approval dialog, and toast status
+- Inline terminal drawer, skills browser, approval dialog with pinned actions, and toast status
 - `Enamel` (light) and `Carbon` (dark) themes
 - Keyboard operation and `prefers-reduced-motion` support
 

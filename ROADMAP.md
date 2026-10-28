@@ -21,17 +21,25 @@ and training-data batch mode are breadth that would dilute Orinos.
 - Streaming text, reasoning, tool calls, usage, and cost.
 - Terminal, file read/write/edit, directory listing, glob, grep, web search,
   web fetch, and skill tools.
-- Workspace-scoped execution and approval gates for risky tools.
+- Workspace-scoped execution and approval gates for risky tools, with pinned
+  approval actions that survive long commands.
 - JSON sessions under `~/.orinos`, project instructions from a small set of
   root-level files, and three-tier skills.
 - The Overprint interface: a continuous execution spine, measured tool steps,
-  keyboard operation, light and dark themes, and reduced-motion behavior.
+  keyboard operation (`⌘K`, `⌘J`, `⌘B`), light and dark themes, reduced-motion
+  behavior, and a quiet-control pass that keeps at most three sibling controls
+  per region with menus for the rest.
 
 The gaps below are the ones that most affect long-running, trustworthy work.
 
 ---
 
-## Research summary
+## Research recap
+
+This roadmap is the engineering plan. The user-side evidence — complaints with
+issue numbers, HN and Reddit citations, and the feature-coverage matrix — is
+consolidated and cited in [COMPETITIVE_RESEARCH.md](COMPETITIVE_RESEARCH.md).
+Read that first for the "why", then continue here for the "what" and "when".
 
 | Hermes capability | Mechanism worth learning from | Orinos implication |
 | --- | --- | --- |
